@@ -1,8 +1,9 @@
 const express = require("express");
-const { updateUniversity } = require("../controller/UniversityController.js");
+const { updateUniversity, createUniversity } = require("../controller/UniversityController.js");
 const router = express.Router();
 
 // Update University
+router.post("/createuniversity", createUniversity);
 router.put("/:id", updateUniversity);
 
 module.exports = router;

@@ -82,7 +82,6 @@ const signinAdmin = async (req, res) => {
         if (!isMatch) {
             return res.status(400).send({ message: 'Invalid details' });
         }
-
         const token = jwt.sign({ _id: loginAdmin._id }, process.env.SECRET_KEY, {
             expiresIn: '1h',
         });
@@ -103,5 +102,5 @@ const signinAdmin = async (req, res) => {
     }
 }
 
-module.exports = signupAdmin, signinAdmin, updateAdmin;
+module.exports = { signupAdmin, signinAdmin, updateAdmin };
 

@@ -1,5 +1,34 @@
 const Resource = require("../model/ResourceModel.js");
 
+const createResource = async (req, res) => {
+  try {
+    // Destructure the required fields from the request body
+    const { type, name, availability } = req.body;
+
+    // Create a new resource instance using the Resource model
+    const newResource = new Resource({
+      type,
+      name,
+      availability,
+    });
+
+    // Save the new resource to the database
+    const savedResource = await newResource.save();
+
+    // Send a success response with the created resource data
+    return res.status(201).json({
+      message: 'Resource created successfully',
+      data: savedResource,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: 'Error creating resource',
+      error: error.message,
+    });
+  }
+};
+
 // Update Resource Details
 const updateResource = async (req, res) => {
   const resourceId = req.params.id;
@@ -25,4 +54,4 @@ const updateResource = async (req, res) => {
   }
 };
 
-module.exports = { updateResource };
+module.exports = { createResource, updateResource };

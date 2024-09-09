@@ -31,15 +31,14 @@ mongoose
     console.log(err);
   });
 
-const adminRouter = require('./routes/AdminRouter');
-app.use('/admin', adminRouter);
-
+const adminRouter = require('./routes/AdminRouter.js');
 const generalDetailsRoutes = require("./routes/GeneralDetailsRouter.js");
 const facultyRoutes = require("./routes/FacultyRouter.js");
 const resourceRoutes = require("./routes/ResourceRouter.js");
 const timetableRoutes = require("./routes/TimeTableRouter.js");
 const universityRoutes = require("./routes/UniversityRouter.js");
 
+app.use('/admin', adminRouter);
 app.use("/generalDetails", generalDetailsRoutes);
 app.use("/faculty", facultyRoutes);
 app.use("/resources", resourceRoutes);

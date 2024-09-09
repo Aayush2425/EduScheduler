@@ -1,5 +1,36 @@
 const Faculty = require("../model/FacultyModel.js");
 
+const createFaculty = async (req, res) => {
+  try {
+    // Destructure the required fields from the request body
+    const { factName, dept, subjects, availability, teachingType } = req.body;
+
+    // Create a new faculty instance using the Faculty model
+    const newFaculty = new Faculty({
+      factName,
+      dept,
+      subjects,
+      availability,
+      teachingType,
+    });
+
+    // Save the new faculty to the database
+    const savedFaculty = await newFaculty.save();
+
+    // Send a success response with the created faculty data
+    return res.status(201).json({
+      message: 'Faculty created successfully',
+      data: savedFaculty,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: 'Error creating faculty',
+      error: error.message,
+    });
+  }
+};
+
 // Update Faculty Details
 const updateFaculty = async (req, res) => {
   const facultyId = req.params.id;
@@ -31,4 +62,4 @@ const updateFaculty = async (req, res) => {
   }
 };
 
-module.exports = { updateFaculty };
+module.exports = { createFaculty, updateFaculty };
