@@ -55,4 +55,17 @@ const updateGeneralDetails = async (req, res) => {
   }
 };
 
-module.exports = { createGeneralDetail, updateGeneralDetails };
+const getAllGeneralDetails = async (req, res) => {
+  const universityName = req.params.uniName;
+  try {
+    const generalDetails = await University.find({ name: universityName }).populate(
+      "generalDetails"
+    );
+    res.status(200).json(generalDetails);
+  }
+  catch (error) {
+    res.status(500).json({ error: "Error getting general details", details: error.message });
+  }
+}
+
+module.exports = { updateGeneralDetails, getAllGeneralDetails, createGeneralDetail };

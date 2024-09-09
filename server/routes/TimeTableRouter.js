@@ -5,5 +5,6 @@ const router = express.Router();
 // Update Timetable
 router.post("/createtimetable", createTimetable);
 router.put("/:id", updateTimetable);
+router.get("/:uniName/get-timetable", getAllTimetable);
 
 module.exports = router;

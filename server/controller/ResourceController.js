@@ -55,3 +55,18 @@ const updateResource = async (req, res) => {
 };
 
 module.exports = { createResource, updateResource };
+const getAllResource = async (req, res) => {
+  const universityName = req.params.uniName;
+  try {
+    const resources = await University.find({ name: universityName }).populate(
+      "resources"
+    );
+    res.status(200).json(resources);
+  }
+  catch (error) {
+    res.status(500).json({ error: "Error getting resources", details: error.message });
+  }
+}
+
+
+module.exports = { updateResource, getAllResource };

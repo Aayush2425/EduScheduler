@@ -1,4 +1,5 @@
 const Faculty = require("../model/FacultyModel.js");
+const University = require("../model/UniversityModel.js");
 
 const createFaculty = async (req, res) => {
   try {
@@ -62,4 +63,17 @@ const updateFaculty = async (req, res) => {
   }
 };
 
-module.exports = { createFaculty, updateFaculty };
+const getAllFaculty = async (req, res) => {
+  const universityName = req.params.uniName;
+  try {
+    const faculties = await University.find({ name: universityName }).populate(
+      "facultyDetails"
+    );
+    res.status(200).json(faculties);
+  } catch (error) {
+    res.status(500).json({ error: "Error getting faculty", details: error.message });
+  }
+};
+
+
+module.exports = { updateFaculty, getAllFaculty,createFaculty };
