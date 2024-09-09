@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 const TimeSlotSchema = mongoose.Schema({
   start: {
-    type: Date,
+    type: String,
     required: true,
   },
   end: {
-    type: Date,
+    type: String,
     required: true,
   },
 });

@@ -5,22 +5,12 @@ const FacultySchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  dept: [
-    {
-      deptName: {
-        type: String,
-        required: true,
-      },
-    },
-  ],
-  subjects: [
-    {
-      subjectName: {
-        type: String,
-        required: true,
-      },
-    },
-  ],
+  dept: {
+    type: Array,
+  },
+  subjects: {
+    type: Array,
+  },
   availability: [
     {
       day: {
@@ -30,14 +20,9 @@ const FacultySchema = mongoose.Schema({
       slots: [Number],
     },
   ],
-  teachingType: [
-    {
-      typeName: {
-        type: String,
-        required: true,
-      },
-    },
-  ],
+  teachingType: {
+    type: Array,
+  },
 });
 
 const Faculty = mongoose.model("Faculty", FacultySchema);

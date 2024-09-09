@@ -13,10 +13,6 @@ const SlotSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  otherDetails: {
-    type: String,
-    required: true,
-  },
   batch: [String],
 });
 
