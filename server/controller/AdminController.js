@@ -84,7 +84,6 @@ const signinAdmin = async (req, res) => {
         loginAdmin.token = token;
         await loginAdmin.save();
 
-
         return res.status(200).send({ data: loginAdmin });
     }
     catch (error) {
