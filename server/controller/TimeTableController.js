@@ -1,4 +1,5 @@
 const Timetable = require("../model/TimetableModel.js");
+const University = require("../model/UniversityModel.js");
 
 // !!!!!!!!!! WORK IN PROGRESS
 
@@ -55,4 +56,22 @@ const updateTimetable = async (req, res) => {
   }
 };
 
-module.exports = { createTimetable, updateTimetable };
+const getAllTimetable = async (req, res) => {
+  const universityName = req.params.uniName;
+  try {
+    const university = await University.find({ name: universityName }).populate(
+      "timetables"
+    );
+    const timetables = university.timetables;
+    return res.status(200).json(timetables);
+  }
+  catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: 'Error fetching timetable',
+      error: error.message,
+    });
+  }
+}
+
+module.exports = { createTimetable, updateTimetable, getAllTimetable };
