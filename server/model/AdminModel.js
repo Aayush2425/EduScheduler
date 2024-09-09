@@ -4,6 +4,7 @@ const AdminSchema = mongoose.Schema({
   username: {
     type: String,
     required: true,
+    unique: true
   },
   password: {
     type: String,
@@ -16,7 +17,11 @@ const AdminSchema = mongoose.Schema({
   personalUniEmail: {
     type: String,
     required: true,
+    unique: true
   },
+  token: {
+    type: String,
+  }
 });
 
 const Admin = mongoose.model("Admin", AdminSchema);
