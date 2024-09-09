@@ -1,11 +1,11 @@
 const express = require("express");
-const { updateAdmin, getAdmin } = require("../controller/AdminController.js");
-const router = express.Router();
 const {
+  updateAdmin,
+  getAdmin,
   signupAdmin,
   signinAdmin,
-  updateAdmin,
-} = require("../controller/AdminController");
+} = require("../controller/AdminController.js");
+const router = express.Router();
 
 // Update Admin
 router.get("/", getAdmin);

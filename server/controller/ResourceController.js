@@ -17,13 +17,13 @@ const createResource = async (req, res) => {
 
     // Send a success response with the created resource data
     return res.status(201).json({
-      message: 'Resource created successfully',
+      message: "Resource created successfully",
       data: savedResource,
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      message: 'Error creating resource',
+      message: "Error creating resource",
       error: error.message,
     });
   }
@@ -54,7 +54,6 @@ const updateResource = async (req, res) => {
   }
 };
 
-module.exports = { createResource, updateResource };
 const getAllResource = async (req, res) => {
   const universityName = req.params.uniName;
   try {
@@ -62,11 +61,11 @@ const getAllResource = async (req, res) => {
       "resources"
     );
     res.status(200).json(resources);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error getting resources", details: error.message });
   }
-  catch (error) {
-    res.status(500).json({ error: "Error getting resources", details: error.message });
-  }
-}
+};
 
-
-module.exports = { updateResource, getAllResource };
+module.exports = { updateResource, getAllResource, createResource };

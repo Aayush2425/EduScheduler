@@ -6,7 +6,7 @@ const dotenv = require("dotenv");
 const path = require("path");
 const mongoose = require("mongoose");
 
-const cookieParser = require('cookie-parser');
+const cookieParser = require("cookie-parser");
 dotenv.config({ path: "../.env" });
 const app = express();
 
@@ -31,18 +31,17 @@ mongoose
     console.log(err);
   });
 
-const adminRouter = require('./routes/AdminRouter.js');
+const adminRouter = require("./routes/AdminRouter.js");
 const generalDetailsRoutes = require("./routes/GeneralDetailsRouter.js");
 const facultyRoutes = require("./routes/FacultyRouter.js");
 const resourceRoutes = require("./routes/ResourceRouter.js");
 const timetableRoutes = require("./routes/TimeTableRouter.js");
 const universityRoutes = require("./routes/UniversityRouter.js");
 
-app.use('/admin', adminRouter);
+app.use("/admin", adminRouter);
 app.use("/generalDetails", generalDetailsRoutes);
 app.use("/faculty", facultyRoutes);
 app.use("/resources", resourceRoutes);
 app.use("/timetable", timetableRoutes);
 app.use("/university", universityRoutes);
-app.use('/admin', adminRouter);
-
+app.use("/admin", adminRouter);
