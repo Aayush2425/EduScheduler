@@ -24,13 +24,7 @@ const updateAdmin = async (req, res) => {
     }
 };
 
-
 const signupAdmin = async (req, res) => {
-    let { username, password, universityEmail, personalUniEmail } = req.body;
-
-    if (!username || !password || !universityEmail || !personalUniEmail) {
-        return res.status(422).json({ error: 'please fill the fields properly' })
-    }
     try {
         const adminExist = await Admin.findOne({ personalUniEmail: personalUniEmail })
 
@@ -84,23 +78,19 @@ const signinAdmin = async (req, res) => {
         }
         const token = jwt.sign({ _id: loginAdmin._id }, process.env.SECRET_KEY, {
             expiresIn: '1h',
+            maxAge: 3600000,
         });
 
         loginAdmin.token = token;
         await loginAdmin.save();
 
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: true,
-            maxAge: 3600000,
-        });
 
         return res.status(200).send({ data: loginAdmin });
-    } catch (error) {
+    }
+    catch (error) {
         console.log(err);
         return res.status(501).send(err);
     }
 }
 
 module.exports = { signupAdmin, signinAdmin, updateAdmin };
-

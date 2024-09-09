@@ -44,3 +44,6 @@ app.use("/faculty", facultyRoutes);
 app.use("/resources", resourceRoutes);
 app.use("/timetable", timetableRoutes);
 app.use("/university", universityRoutes);
+const adminRouter = require('./routes/AdminRouter');
+app.use('/admin', adminRouter);
+
