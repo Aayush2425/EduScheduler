@@ -117,4 +117,4 @@ const signinAdmin = async (req, res) => {
   }
 };
 
-module.exports = { signupAdmin, signinAdmin, updateAdmin };
+module.exports = { signupAdmin, signinAdmin, updateAdmin, getAdmin };
