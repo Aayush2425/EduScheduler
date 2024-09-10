@@ -245,7 +245,8 @@ const FakeForm = ({ fields, submitLabel }) => {
       } else if (submitLabel === 'Sign in') {
         url = 'http://localhost:8000/admin/signin';
       }
-
+      console.log(formData);
+      
       const response = await fetch(url, {
         method: 'POST',
         headers: {

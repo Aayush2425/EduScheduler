@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function GeneralDetailsForm() {
+  const uniName = localStorage.getItem("uniName");
+  const navigate = useNavigate();
   const [generalDetails, setGeneralDetails] = useState({
     time: {
       break: [{ name: "", start: "", end: "" }],
@@ -85,6 +88,41 @@ function GeneralDetailsForm() {
         body: JSON.stringify(updatedGeneralDetails),
       });
       const data = await response.json();
+      
+      
+      const universityResponse = await fetch(`http://localhost:8000/university/${uniName}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const universityData = await universityResponse.json();
+
+      if (universityData.generalDetails == null) {
+        universityData.generalDetails = data.data._id;
+  
+        const updateResponse = await fetch(`http://localhost:8000/university/${uniName}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            generalDetails: universityData.generalDetails,
+          }),
+        });
+  
+        if (!updateResponse.ok) {
+          throw new Error("Failed to update university details");
+        }
+  
+        const updatedUniversity = await updateResponse.json();
+        console.log("University updated successfully:", updatedUniversity);
+        navigate("/facultyDetailForm");
+      } else {
+        console.log("generalDetails ID already exists in the university");
+      }
+      
       console.log(updatedGeneralDetails);
     } catch (error) {
       console.error(error);

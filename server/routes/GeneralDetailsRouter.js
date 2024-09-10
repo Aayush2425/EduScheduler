@@ -2,7 +2,8 @@ const express = require("express");
 const {
   updateGeneralDetails,
   getAllGeneralDetails,
-  createGeneralDetail
+  createGeneralDetail,
+  getGeneralDetailsById
 } = require("../controller/GeneralDetailsController.js");
 const router = express.Router();
 
@@ -10,5 +11,6 @@ const router = express.Router();
 router.post("/creategeneraldetail", createGeneralDetail);
 router.put("/:id", updateGeneralDetails);
 router.get("/:uniName/get-details", getAllGeneralDetails);
+router.get("/:id", getGeneralDetailsById);
 
 module.exports = router;

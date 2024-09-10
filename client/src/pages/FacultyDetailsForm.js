@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 export const FacultyDetailsForm = () => {
   const uniName = localStorage.getItem("uniName");
+  const navigate = useNavigate();
   const [facultyDetails, setFacultyDetails] = useState({
     factName : "",
     dept : [],
@@ -20,7 +22,7 @@ export const FacultyDetailsForm = () => {
 
   const getUniversityDept = async () => {
     try {
-      const response = await fetch("http://localhost:8000/generalDetails/Darshan%20University/get-details", {
+      const response = await fetch("http://localhost:8000/generalDetails/" + uniName + "/get-details", {
         method: 'GET'
       });
       
@@ -29,15 +31,15 @@ export const FacultyDetailsForm = () => {
       }
       
       const data = await response.json();
+      console.log(data[0]);
+      
   
-      const universityData = data.find((uni) => uni.name === "Darshan University");
-  
-      if (universityData) {
-        const deptNames = universityData.generalDetails.depts.map((element) => element.deptName);
+      if (data) {
+        const deptNames = data[0].generalDetails.depts.map((element) => element.deptName);
 
         setDeptData(deptNames); 
 
-        const allSubjectData = universityData.generalDetails.depts.flatMap((element) => element.subjects);
+        const allSubjectData = data[0].generalDetails.depts.flatMap((element) => element.subjects);
         
         const subjectNames = allSubjectData.map((element) => element.subjectName);
 
@@ -144,6 +146,7 @@ export const FacultyDetailsForm = () => {
           availability: [{ day: "", slots: [] }],
           teachingType: []
         });
+        navigate("/resourceDetailForm");
       })
       .catch((error) => {
         console.error("Error submitting form:", error);

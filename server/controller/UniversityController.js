@@ -33,14 +33,19 @@ const createUniversity = async (req, res) => {
 };
 // Update University Details (e.g., admin, generalDetails, etc.)
 const updateUniversity = async (req, res) => {
-  const universityId = req.params.id;
+  const uniName = req.params.id;
   const updates = req.body;
 
   try {
-    const updatedUniversity = await University.findByIdAndUpdate(
-      universityId,
-      updates,
-      { new: true }
+    // const updatedUniversity = await University.findByOneAndUpdate(
+    //   universityId,
+    //   updates,
+    //   { new: true }
+    // );
+    const updatedUniversity = await University.findOneAndUpdate(
+      { name: uniName },  // Find by name
+      { $set: updates },  // Apply the updates (generalDetails or others)
+      { new: true }  // Return the updated document
     );
     if (!updatedUniversity) {
       return res.status(404).json({ message: "University not found" });
@@ -53,4 +58,20 @@ const updateUniversity = async (req, res) => {
   }
 };
 
-module.exports = { createUniversity, updateUniversity };
+const getUniByName = async (req,res) => {
+  const uniName = req.params.uniName
+  try {
+    const uni = await University.find({name : uniName})
+    console.log(uni[0]);
+    
+    if (!uni) {
+      return res.status(500).json({message : "No such university"})
+    }
+    res.status(200).json(uni[0])
+  } catch (err) {
+    res.status(500)
+    .json({ error: "Error Getting A university", details: err.message });
+  }
+}
+
+module.exports = { createUniversity, updateUniversity, getUniByName };

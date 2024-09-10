@@ -1,4 +1,5 @@
 const Resource = require("../model/ResourceModel.js");
+const University = require("../model/UniversityModel.js");
 
 const createResource = async (req, res) => {
   try {
@@ -60,7 +61,7 @@ const getAllResource = async (req, res) => {
     const resources = await University.find({ name: universityName }).populate(
       "resources"
     );
-    res.status(200).json(resources);
+    res.status(200).json(resources[0]);
   } catch (error) {
     res
       .status(500)

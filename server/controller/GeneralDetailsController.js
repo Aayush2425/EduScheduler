@@ -69,4 +69,20 @@ const getAllGeneralDetails = async (req, res) => {
   }
 }
 
-module.exports = { updateGeneralDetails, getAllGeneralDetails, createGeneralDetail };
+// Get General Details by ID
+
+const getGeneralDetailsById = async (req, res) => {
+  const generalDetailsId = req.params.id;
+
+  try {
+    const generalDetails = await GeneralDetails.findById(generalDetailsId);
+    if (!generalDetails) {
+      return res.status(404).json({ message: "General Details not found" });
+    }
+    res.status(200).json(generalDetails);
+  } catch (error) {
+    res.status(500).json({ error: "Error getting general details", details: error.message });
+  }
+};
+
+module.exports = { updateGeneralDetails, getAllGeneralDetails, createGeneralDetail, getGeneralDetailsById };

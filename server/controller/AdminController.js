@@ -42,10 +42,12 @@ const updateAdmin = async (req, res) => {
 };
 
 const signupAdmin = async (req, res) => {
-  let { username, universityEmail, universityName, password } = req.body;
+  let { password,  universityName,universityEmail,username  } = req.body;
+  console.log(password, universityName, username,universityEmail);
+  
   try {
     const adminExist = await Admin.findOne({
-      universityName: universityName,
+      username: username,
     });
 
     if (adminExist) {
@@ -56,18 +58,23 @@ const signupAdmin = async (req, res) => {
     let hashPassword = await bcrypt.hash(password, 12);
     password = hashPassword;
 
-    const newAdmin = await Admin.create({
+    const newAdmin = await Admin({
       username,
       password,
       universityEmail,
       universityName,
     });
+    await newAdmin.save();
 
     const token = jwt.sign({ _id: newAdmin._id }, process.env.SECRET_KEY, {
       expiresIn: "1h",
     });
+    console.log(token);
+    
     newAdmin.token = token;
-    newAdmin.save();
+    console.log(newAdmin);
+    
+    await newAdmin.save();
 
     res.cookie("token", token, {
       httpOnly: true,
