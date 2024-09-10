@@ -44,4 +44,3 @@ app.use("/faculty", facultyRoutes);
 app.use("/resources", resourceRoutes);
 app.use("/timetable", timetableRoutes);
 app.use("/university", universityRoutes);
-app.use("/admin", adminRouter);

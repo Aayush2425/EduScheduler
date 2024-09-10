@@ -4,9 +4,7 @@ const {
   updateAdmin,
   getAdmin,
   signupAdmin,
-  signinAdmin,
-  updateAdmin,
-  getAdmin
+  signinAdmin
 } = require("../controller/AdminController");
 
 // Update Admin
