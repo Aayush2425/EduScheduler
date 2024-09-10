@@ -10,7 +10,7 @@ const {
 } = require("../controller/AdminController");
 
 // Update Admin
-router.get("/", getAdmin);
+router.get("/:id", getAdmin);
 router.post("/signup", signupAdmin);
 router.post("/signin", signinAdmin);
 router.put("/:id", updateAdmin);

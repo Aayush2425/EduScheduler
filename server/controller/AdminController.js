@@ -42,6 +42,7 @@ const updateAdmin = async (req, res) => {
 };
 
 const signupAdmin = async (req, res) => {
+  let { username, universityEmail,  personalUniEmail, password } = req.body;
   try {
     const adminExist = await Admin.findOne({
       personalUniEmail: personalUniEmail,
@@ -97,14 +98,13 @@ const signinAdmin = async (req, res) => {
       return res.status(400).send({ message: "Invalid details" });
     }
 
-    const isMatch = await bcrypt.compare(password, loginAdmin.password);
+    let isMatch = await bcrypt.compare(password, loginAdmin.password);
 
     if (!isMatch) {
       return res.status(400).send({ message: "Invalid details" });
     }
     const token = jwt.sign({ _id: loginAdmin._id }, process.env.SECRET_KEY, {
-      expiresIn: "1h",
-      maxAge: 3600000,
+      expiresIn: "1h"
     });
 
     loginAdmin.token = token;
@@ -112,8 +112,8 @@ const signinAdmin = async (req, res) => {
 
     return res.status(200).send({ data: loginAdmin });
   } catch (error) {
-    console.log(err);
-    return res.status(501).send(err);
+    console.log(error);
+    return res.status(501).send(error);
   }
 };
 
