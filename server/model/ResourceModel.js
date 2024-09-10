@@ -10,7 +10,7 @@ const ResourceAvailabilitySchema = mongoose.Schema({
 
 const ResourceSchema = mongoose.Schema({
   type: {
-    type: String,
+    type: String,k
     required: true,
   },
   name: {

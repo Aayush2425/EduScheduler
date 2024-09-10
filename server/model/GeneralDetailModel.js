@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const TimeSlotSchema = mongoose.Schema({
+  name:{
+    type: String,
+    required: true,
+  },
   start: {
     type: String,
     required: true,
@@ -32,13 +36,24 @@ const DepartmentSchema = mongoose.Schema({
     required: true,
   },
   batches: [String],
+  subjects: [{
+    subjectName: String,
+    faculty: String,
+    credit: [
+      {
+        resourceName: String,
+        quantity: Number 
+      }
+    ],
+
+  }],
 });
 
 const GeneralDetailsSchema = mongoose.Schema({
   time: {
     break: [TimeSlotSchema],
     slots: [TimeSlotSchema],
-    resources: [TimeSlotSchema],
+    resources: [TimeSlotSchema],        // lab - 2h  audi - 1 h   
   },
   days: {
     type: Number,
