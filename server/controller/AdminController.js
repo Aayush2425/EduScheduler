@@ -42,7 +42,7 @@ const updateAdmin = async (req, res) => {
 };
 
 const signupAdmin = async (req, res) => {
-  let { username, universityEmail,  universityName, password } = req.body;
+  let { username, universityEmail, universityName, password } = req.body;
   try {
     const adminExist = await Admin.findOne({
       universityName: universityName,
@@ -104,16 +104,16 @@ const signinAdmin = async (req, res) => {
       return res.status(400).send({ message: "Invalid details" });
     }
     const token = jwt.sign({ _id: loginAdmin._id }, process.env.SECRET_KEY, {
-      expiresIn: "1h"
+      expiresIn: "1h",
     });
 
     loginAdmin.token = token;
     await loginAdmin.save();
 
     return res.status(200).send({ data: loginAdmin });
-  } catch (error) {
-    console.log(error);
-    return res.status(501).send(error);
+  } catch (err) {
+    console.log(err);
+    return res.status(501).send(err);
   }
 };
 

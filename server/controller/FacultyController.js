@@ -20,13 +20,13 @@ const createFaculty = async (req, res) => {
 
     // Send a success response with the created faculty data
     return res.status(201).json({
-      message: 'Faculty created successfully',
+      message: "Faculty created successfully",
       data: savedFaculty,
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      message: 'Error creating faculty',
+      message: "Error creating faculty",
       error: error.message,
     });
   }
@@ -71,9 +71,10 @@ const getAllFaculty = async (req, res) => {
     );
     res.status(200).json(faculties);
   } catch (error) {
-    res.status(500).json({ error: "Error getting faculty", details: error.message });
+    res
+      .status(500)
+      .json({ error: "Error getting faculty", details: error.message });
   }
 };
 
-
-module.exports = { updateFaculty, getAllFaculty,createFaculty };
+module.exports = { updateFaculty, getAllFaculty, createFaculty };
