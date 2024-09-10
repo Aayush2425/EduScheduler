@@ -11,8 +11,7 @@ const UniversitySchema = mongoose.Schema({
   },
   generalDetails: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "GeneralDetails",
-    required: true,
+    ref: "GeneralDetails"
   },
   facultyDetails: [
     {

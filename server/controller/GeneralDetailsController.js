@@ -1,4 +1,5 @@
 const GeneralDetails = require("../model/GeneralDetailModel.js");
+const University = require("../model/UniversityModel.js");
 
 const createGeneralDetail = async (req, res) => {
   try {

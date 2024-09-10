@@ -238,8 +238,10 @@ const FakeForm = ({ fields, submitLabel }) => {
 
     try {
       let url = '';
+      let adminUrl = '';
       if (submitLabel === 'Sign up') {
         url = 'http://localhost:8000/admin/signup';
+        adminUrl = 'http://localhost:8000/university/createuniversity';
       } else if (submitLabel === 'Sign in') {
         url = 'http://localhost:8000/admin/signin';
       }
@@ -252,6 +254,8 @@ const FakeForm = ({ fields, submitLabel }) => {
         body: JSON.stringify(formData),
       });
 
+      
+
       if (!response.ok) {
         throw new Error(`Failed to ${submitLabel.toLowerCase()}`);
       }
@@ -260,6 +264,19 @@ const FakeForm = ({ fields, submitLabel }) => {
       console.log(result);
       
       localStorage.setItem("token",result.data.token);
+      localStorage.setItem("uniName", result.data.universityName);
+
+      const universityResponse = await fetch(adminUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name : result.data.universityName,
+          admin : result.data._id
+        }),
+      });
+
       toast.success(`${submitLabel} successful!`);
       if (submitLabel === 'Sign up') {
         navigate("/generalDetailForm");

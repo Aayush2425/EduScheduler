@@ -53,7 +53,16 @@ const GeneralDetailsSchema = mongoose.Schema({
   time: {
     break: [TimeSlotSchema],
     slots: [TimeSlotSchema],
-    resources: [TimeSlotSchema],        // lab - 2h  audi - 1 h   
+    resources: [
+      {
+        name : {
+          type : String,
+        },
+        duration : {
+          type : String,
+        },
+      }
+    ],        // lab - 2h  audi - 1 h   
   },
   days: {
     type: Number,

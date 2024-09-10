@@ -7,35 +7,48 @@ function GeneralDetailsForm() {
       slots: [{ name: "", start: "", end: "" }],
       resources: [{ name: "", duration: ""}]
     },
-    days: null,
+    days: 0,
     depts: [
       {
         deptName: "",
-        semester: null,
+        semester: 0,
         batches: [""],
         subjects: [
           {
             subjectName: "",
             faculty: "",
-            credit: [{ resourceName: "", quantity: null }]
+            credit: [{ resourceName: "", quantity: 0 }]
           }
         ]
       }
     ],
-    numberOfResources: [{ type: "", quantity: null }]
+    numberOfResources: [{ type: "", quantity: 0 }]
   });
+
+  const [dept, setdept] = useState({
+    deptName: "",
+        semester: 0,
+        batches: [""],
+        subjects: [
+          {
+            subjectName: "",
+            faculty: "",
+            credit: [{ resourceName: "", quantity: 0 }]
+          }
+        ]
+  })
 
   const [subjects, setSubjects] = useState([
     {
       subjectName: "",
       faculty: "",
-      credit: [{ resourceName: "", quantity: null }]
+      credit: [{ resourceName: "", quantity: 0 }]
     }
   ]);
 
   const [numberOfResources, setNumberOfResorces] = useState([{
     type: "",
-    quantity: null
+    quantity: 0
   }])
 
   const [time, setTime] = useState({
@@ -44,29 +57,35 @@ function GeneralDetailsForm() {
     resources: [{ name: "", duration: "" }],
   });
 
-  const handleChange = (e, path) => {
-    const [field, index, subfield] = path.split(".");
-    const updatedDetails = { ...generalDetails };
-    if (index) {
-      updatedDetails[field][index][subfield] = e.target.value;
-    } else {
-      updatedDetails[field] = e.target.value;
-    }
-    setGeneralDetails(updatedDetails);
-  };
-
   const handleSubmit = async (e) => {
+
     e.preventDefault();
+
+    const updatedGeneralDetails = {
+      ...generalDetails,
+      depts: [
+        {
+          ...generalDetails.depts[0],
+          deptName : dept.deptName,
+          semester : dept.semester,
+          batches : dept.batches.split(","),
+          subjects: subjects,
+        }
+      ],
+      numberOfResources : numberOfResources,
+      time: time,
+    };
+
     try {
-      const response = await fetch("/api/generalDetails", {
+      const response = await fetch("http://localhost:8000/generalDetails/creategeneraldetail", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(generalDetails),
+        body: JSON.stringify(updatedGeneralDetails),
       });
       const data = await response.json();
-      console.log(data);
+      console.log(updatedGeneralDetails);
     } catch (error) {
       console.error(error);
     }
@@ -115,7 +134,7 @@ function GeneralDetailsForm() {
       ...numberOfResources,
       {
         type : "",
-        quantity : null
+        quantity : 0
       }
     ])
   }
@@ -140,7 +159,7 @@ function GeneralDetailsForm() {
 
   return (
     <div className="w-screen flex justify-center py-5">
-      <form className="w-4/5 flex flex-col justify-center py-5 shadow-xl">
+      <form className="w-4/5 flex flex-col justify-center py-5 shadow-xl" onSubmit={handleSubmit}>
         <div className="font-bold text-4xl mx-auto text-slate-700">
           General Details Form
         </div>
@@ -151,19 +170,19 @@ function GeneralDetailsForm() {
               type="text"
               className="border rounded-lg py-2 px-3"
               placeholder="Department Name"
-              onChange={(e) => handleChange(e, "depts.0.deptName")}
+              onChange={(e) => setdept({...dept, deptName : e.target.value})}
             />
             <input
               type="number"
               className="border rounded-lg py-2 px-3"
               placeholder="Current Semester"
-              onChange={(e) => handleChange(e, "depts.0.deptName")}
+              onChange={(e) => setdept({...dept, semester : e.target.value})}
             />
             <input
               type="text"
               className="border rounded-lg py-2 px-3"
               placeholder="Enter comma seperated batches"
-              onChange={(e) => handleChange(e, "depts.0.deptName")}
+              onChange={(e) => setdept({...dept, batches : e.target.value})}
             />
           </div>
           <div className="flex flex-col gap-2 justify-start">
@@ -228,18 +247,12 @@ function GeneralDetailsForm() {
                     </div>
                     {subject.credit.map((credit, creditIndex) => (
                       <div key={creditIndex} className="flex gap-2">
-                        {/* <input
-                          type="text"
-                          value={credit.resourceName}
-                          placeholder="Resource Name"
-                          className="border rounded-lg py-2 px-3 w-full"
-                          onChange={(e) => handleCreditChange(subjectIndex, creditIndex, 'resourceName', e.target.value)}
-                        /> */}
-                        <select className="border rounded-lg py-2 px-3 w-full">
+                        <select className="border rounded-lg py-2 px-3 w-full" onChange={(e) => handleCreditChange(subjectIndex, creditIndex, 'resourceName', e.target.value)}>
+                          <option selected disabled>NA</option>
                           {
                             numberOfResources.map((resourse) => {
                               return (
-                                <option>
+                                <option value={resourse.type} >
                                   {resourse.type}
                                 </option>
                               )
@@ -267,7 +280,7 @@ function GeneralDetailsForm() {
               type="number"
               className="border rounded-lg py-2 px-3"
               placeholder="0"
-              onChange={(e) => handleChange(e, "depts.0.deptName")}
+              onChange={(e) => setGeneralDetails({...generalDetails, days : e.target.value})}
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -294,14 +307,14 @@ function GeneralDetailsForm() {
               value={brk.start}
               placeholder="Start Time"
               className="border rounded-lg py-2 px-3 w-full"
-              onChange={(e) => handleTimeChange('break', index, 'start', e.target.value)}
+              onChange={(e) => handleTimeChange('break', index, 'start', e.target.value.toString())}
             />
             <input
               type="time"
               value={brk.end}
               placeholder="End Time"
               className="border rounded-lg py-2 px-3 w-full"
-              onChange={(e) => handleTimeChange('break', index, 'end', e.target.value)}
+              onChange={(e) => handleTimeChange('break', index, 'end', e.target.value.toString())}
             />
           </div>
         ))}
@@ -329,14 +342,14 @@ function GeneralDetailsForm() {
               value={slot.start}
               placeholder="Start Time"
               className="border rounded-lg py-2 px-3 w-full"
-              onChange={(e) => handleTimeChange('slots', index, 'start', e.target.value)}
+              onChange={(e) => handleTimeChange('slots', index, 'start', e.target.value.toString())}
             />
             <input
               type="time"
               value={slot.end}
               placeholder="End Time"
               className="border rounded-lg py-2 px-3 w-full"
-              onChange={(e) => handleTimeChange('slots', index, 'end', e.target.value)}
+              onChange={(e) => handleTimeChange('slots', index, 'end', e.target.value.toString())}
             />
           </div>
         ))}
@@ -352,11 +365,12 @@ function GeneralDetailsForm() {
         </div>
         {time.resources.map((resource, index) => (
           <div key={index} className="flex gap-2">
-            <select className="border rounded-lg py-2 px-3 w-full">
+            <select className="border rounded-lg py-2 px-3 w-full" onChange={(e) => handleTimeChange("resources",index, 'name', e.target.value)}>
+                        <option selected disabled>NA</option>
                           {
                             numberOfResources.map((resourse) => {
                               return (
-                                <option>
+                                <option value={resource.type} >
                                   {resourse.type}
                                 </option>
                               )

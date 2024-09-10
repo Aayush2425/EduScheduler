@@ -56,6 +56,7 @@ const updateTimetable = async (req, res) => {
   }
 };
 
+
 const getAllTimetable = async (req, res) => {
   const universityName = req.params.uniName;
   try {
