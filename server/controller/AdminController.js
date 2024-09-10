@@ -42,10 +42,10 @@ const updateAdmin = async (req, res) => {
 };
 
 const signupAdmin = async (req, res) => {
-  let { username, universityEmail,  personalUniEmail, password } = req.body;
+  let { username, universityEmail,  universityName, password } = req.body;
   try {
     const adminExist = await Admin.findOne({
-      personalUniEmail: personalUniEmail,
+      universityName: universityName,
     });
 
     if (adminExist) {
@@ -60,7 +60,7 @@ const signupAdmin = async (req, res) => {
       username,
       password,
       universityEmail,
-      personalUniEmail,
+      universityName,
     });
 
     const token = jwt.sign({ _id: newAdmin._id }, process.env.SECRET_KEY, {
@@ -83,15 +83,15 @@ const signupAdmin = async (req, res) => {
 };
 
 const signinAdmin = async (req, res) => {
-  let { personalUniEmail, password } = req.body;
+  let { universityEmail, password } = req.body;
 
   try {
-    if (!personalUniEmail || !password) {
+    if (!universityEmail || !password) {
       return res.status(422).json({ message: "please enter required details" });
     }
 
     const loginAdmin = await Admin.findOne({
-      personalUniEmail: personalUniEmail,
+      universityEmail: universityEmail,
     });
 
     if (!loginAdmin) {

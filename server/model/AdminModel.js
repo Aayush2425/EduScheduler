@@ -13,11 +13,12 @@ const AdminSchema = mongoose.Schema({
   universityEmail: {
     type: String,
     required: true,
+    unique:true
   },
-  personalUniEmail: {
+  universityName: {
     type: String,
     required: true,
-    unique: true
+    unique:true
   },
   token: {
     type: String,
