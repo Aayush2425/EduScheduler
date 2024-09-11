@@ -282,7 +282,7 @@ const FakeForm = ({ fields, submitLabel }) => {
       if (submitLabel === 'Sign up') {
         navigate("/generalDetailForm");
       } else if (submitLabel === 'Sign in') {
-        navigate("/dashboard");
+        navigate("/home");
       }
       console.log(`${submitLabel} successful:`, result);
     } catch (error) {

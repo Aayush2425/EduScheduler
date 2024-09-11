@@ -61,7 +61,7 @@ const getAllResource = async (req, res) => {
     const resources = await University.find({ name: universityName }).populate(
       "resources"
     );
-    res.status(200).json(resources[0]);
+    res.status(200).json(resources[0] ? resources[0] : []);
   } catch (error) {
     res
       .status(500)
