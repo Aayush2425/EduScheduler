@@ -8,6 +8,7 @@ export const Dashboard = () => {
   const [generalDetails, setGeneralDetails] = useState([])
   const [facultyDetails, setFacultyDetails] = useState([])
   const [resourceDetails, setResourceDetails] = useState([])
+  const [timetableDetails, setTimetableDetails] = useState([])
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const nav = useNavigate()
@@ -82,6 +83,28 @@ export const Dashboard = () => {
       }
     };
 
+    const getTableDetails = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/resources/" + uniName + "/get-all-resources", {
+          method: "GET"
+        });
+
+        if (!res.ok) {
+          throw new Error(`Failed to fetch resource details: ${res.status}`);
+        }
+
+        const data = await res.json();
+        if (data) {
+          setResourceDetails(data.resources);
+          console.log("Resource Details:", data.resources);
+        } else {
+          console.log("No resource details found.");
+        }
+      } catch (error) {
+        console.error("Error fetching resource details:", error);
+      }
+    };
+
     getGeneralDetails();
     getFacultyDetails();
     getResourceDetails();
@@ -115,16 +138,17 @@ export const Dashboard = () => {
           <div className='hover:cursor-pointer ' onClick={() => setDisplayDetails([false, false, true, false])}>Resource Details</div>
           <div className='hover:cursor-pointer ' onClick={() => setDisplayDetails([false, false, false, true])}>Timetable</div>
         </div>
+        <div className='w-full font-bold text-lg text-slate-500'>
         {displayDetails[0] === true ? (
-          <div>
-          <h2>{uniName} - General Details</h2>
+          <div className='w-4/5 p-10 flex flex-col justify-center gap-1'>
+          <h2 className='font-bold text-2xl text-slate-900'>General Details</h2>
     
           {/* Check if generalDetails.time and generalDetails.time.break exist */}
           <h3>Break Times</h3>
           {generalDetails.time && generalDetails.time.break ? (
-            <table border="1">
+            <table className='border w-full'>
               <thead>
-                <tr>
+                <tr >
                   <th>Name</th>
                   <th>Start</th>
                   <th>End</th>
@@ -132,7 +156,7 @@ export const Dashboard = () => {
               </thead>
               <tbody>
                 {generalDetails.time.break.map((breakTime) => (
-                  <tr key={breakTime._id}>
+                  <tr key={breakTime._id} >
                     <td>{breakTime.name}</td>
                     <td>{breakTime.start}</td>
                     <td>{breakTime.end}</td>
@@ -145,9 +169,9 @@ export const Dashboard = () => {
           )}
     
           {/* Check if generalDetails.time and generalDetails.time.slots exist */}
-          <h3>Time Slots</h3>
+          <h3 className='font-bold text-lg text-slate-500'>Time Slots</h3>
           {generalDetails.time && generalDetails.time.slots ? (
-            <table border="1">
+            <table border="1" className='border w-full'>
               <thead>
                 <tr>
                   <th>Slot Name</th>
@@ -172,7 +196,7 @@ export const Dashboard = () => {
           {/* Check if generalDetails.time and generalDetails.time.resources exist */}
           <h3>Resources</h3>
           {generalDetails.time && generalDetails.time.resources ? (
-            <table border="1">
+            <table border="1" className='border w-full'>
               <thead>
                 <tr>
                   <th>Resource Name</th>
@@ -201,7 +225,7 @@ export const Dashboard = () => {
                 <h5>Batches: {dept.batches.join(', ')}</h5>
     
                 {/* Check if dept.subjects exists */}
-                <table border="1">
+                <table border="1" className='border w-full'>
                   <thead>
                     <tr>
                       <th>Subject Name</th>
@@ -234,7 +258,7 @@ export const Dashboard = () => {
           {/* Check if generalDetails.numberOfResources exists */}
           <h3>Total Number of Resources</h3>
           {generalDetails.numberOfResources ? (
-            <table border="1">
+            <table border="1" className='border w-full'>
               <thead>
                 <tr>
                   <th>Type</th>
@@ -321,6 +345,7 @@ export const Dashboard = () => {
         ) : displayDetails[3] === true ? (
           <div>Timetable Details</div>
         ) : <div></div>}
+        </div>
       </div>
     </div>
   )
