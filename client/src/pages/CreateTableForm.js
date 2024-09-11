@@ -9,10 +9,10 @@ export const CreateTableForm = () => {
         resources: {},
         numOfStudentPerBatch: 0,
         faculties: [{
-            factName: "",
-            subjects: ""
+            faculty: "",
+            subject: ""
         }],
-        uniName: ""
+        uniName: "darshan university"
     })
 
     const [deptData, setDeptData] = useState([]);
@@ -77,9 +77,9 @@ export const CreateTableForm = () => {
 
             // Instead of pushing, create a new array
             const formattedFaculties = facultyDetails.flatMap(facultyList =>
-                facultyList.map(faculty => ({
-                    factName: faculty.factName,
-                    subjects: faculty.subjects
+                facultyList.map(fac => ({
+                    factName: fac.factName,
+                    subjects: fac.subjects
                 }))
             );
 
@@ -111,8 +111,8 @@ export const CreateTableForm = () => {
         setFormData((prevState) => ({
             ...prevState,
             faculties: updatedSelectedFaculties.map(fac => ({
-                factName: fac.factName,
-                subjects: fac.subjects
+                faculty: fac.factName,
+                subject: fac.subjects
             }))
         }));
     };
@@ -132,7 +132,8 @@ export const CreateTableForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setFormData({ ...formData, uniName: uniNamee });
-        await fetch("localhost:8000/createTimeTableForm", {
+        console.log(formData);
+        await fetch("http://localhost:8000/timetable/createtimetable", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -231,29 +232,31 @@ export const CreateTableForm = () => {
                     </div>
 
                     {/* Subject Dropdown based on selected faculties */}
-                    {selectedFaculties.length > 0 && (
-                        <div className="flex flex-col gap-2 justify-start">
-                            <div className="font-bold text-2xl text-slate-700">Select Subject for Selected Faculty: </div>
-                            <select
-                                name="subjects"
-                                value={selectedSubject}
-                                onChange={handleSubjectChange}
-                                className="border rounded-lg py-2 px-3 w-full"
-                            >
-                                <option value="">Select Subject</option>
-                                {selectedFaculties.flatMap(faculty =>
-                                    faculty.subjects.map((subject, index) => (
-                                        <option key={index} value={subject}>
+                    {selectedFaculties.length > 0 &&
+                        selectedFaculties.map((faculty, index) => (
+                            <div key={index} className="flex flex-col gap-2 justify-start">
+                                <div className="font-bold text-xl text-slate-700">
+                                    Select Subject for {faculty.factName}:
+                                </div>
+                                <select
+                                    name="subject"
+                                    value={formData.faculties[index]?.subject || ""}
+                                    onChange={(e) => handleSubjectChange(index, e.target.value)}
+                                    className="border rounded-lg py-2 px-3 w-full"
+                                >
+                                    <option value="">Select Subject</option>
+                                    {faculty.subjects.map((subject, subIndex) => (
+                                        <option key={subIndex} value={subject}>
                                             {subject}
                                         </option>
-                                    ))
-                                )}
-                            </select>
-                        </div>
-                    )}
+                                    ))}
+                                </select>
+                            </div>
+                        ))}
 
                     {/* Number of Students per Batch */}
                     <div className="flex flex-col gap-2 justify-start">
+                    <label className="font-bold text-2xl text-slate-700">Number of Students per Batch: </label>
                         <input
                             type="number"
                             name="numOfStudentPerBatch"

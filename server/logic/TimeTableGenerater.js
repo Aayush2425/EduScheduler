@@ -140,7 +140,7 @@ async function GenerateTimeTable(
                     }
                 }
                 // Loop through available faculties and allocate sessions
-                for (let j = 0; j < DepartmentAllFaculties.length; j++) {
+                for (let j = 0; j < availableFacultyPerSlot.length; j++) {
                     let singlefaculty = DepartmentAllFaculties[j];
                     // console.log(singlefaculty);
 
