@@ -4,11 +4,18 @@ const cors = require("cors");
 const bodyparser = require("body-parser");
 const dotenv = require("dotenv");
 const path = require("path");
+const createClient = require("redis").createClient;
 const mongoose = require("mongoose");
-
+const GenerateTimeTable = require("./logic/TimeTableGenerater.js");
 const cookieParser = require("cookie-parser");
 dotenv.config({ path: "../.env" });
 const app = express();
+const adminRouter = require("./routes/AdminRouter.js");
+const generalDetailsRoutes = require("./routes/GeneralDetailsRouter.js");
+const facultyRoutes = require("./routes/FacultyRouter.js");
+const resourceRoutes = require("./routes/ResourceRouter.js");
+const timetableRoutes = require("./routes/TimeTableRouter.js");
+const universityRoutes = require("./routes/UniversityRouter.js");
 
 // routes and middlewares are defined here
 
@@ -31,12 +38,13 @@ mongoose
     console.log(err);
   });
 
-const adminRouter = require("./routes/AdminRouter.js");
-const generalDetailsRoutes = require("./routes/GeneralDetailsRouter.js");
-const facultyRoutes = require("./routes/FacultyRouter.js");
-const resourceRoutes = require("./routes/ResourceRouter.js");
-const timetableRoutes = require("./routes/TimeTableRouter.js");
-const universityRoutes = require("./routes/UniversityRouter.js");
+const client = createClient({
+  password: process.env.REDISPASSWORD,
+  socket: {
+    host: "redis-17169.c305.ap-south-1-1.ec2.redns.redis-cloud.com",
+    port: 17169,
+  },
+});
 
 app.use("/admin", adminRouter);
 app.use("/generalDetails", generalDetailsRoutes);
@@ -44,3 +52,56 @@ app.use("/faculty", facultyRoutes);
 app.use("/resources", resourceRoutes);
 app.use("/timetable", timetableRoutes);
 app.use("/university", universityRoutes);
+client.on("error", (err) => {
+  console.log("Redis Client Error", err);
+  if (err.errno == -3008) {
+    console.log("check internet connection");
+
+    let timeout = 10,
+      count = 1;
+    const interval = setInterval(() => {
+      if (count == 10) {
+        console.log(`retrying in ${timeout} secs`);
+        if (timeout == 0) {
+          clearInterval(interval);
+        }
+        timeout--;
+        count = 1;
+      }
+      count++;
+    }, 100);
+  }
+});
+
+(async () => {
+  try {
+    await client.connect();
+    console.log("Redis client connected successfully.");
+
+    // Check if the client is ready before running any commands
+    const pingResult = await client.ping();
+    console.log("Redis Client Ping:", pingResult);
+
+    app.use("/admin", adminRouter);
+    app.use("/generalDetails", generalDetailsRoutes);
+    app.use("/faculty", facultyRoutes);
+    app.use("/resources", resourceRoutes);
+    app.use("/timetable", timetableRoutes);
+    app.use("/university", universityRoutes);
+    app.use("/admin", adminRouter);
+    app.post("/createTimeTableForm", async (req, res) => {
+      const data=req.body;
+      ans = await GenerateTimeTable(data);
+      // console.log(ans);
+      await client.set("timetable", JSON.stringify(ans));
+      res.send(ans)
+    });
+  } catch (err) {
+    console.error("Failed to connect to Redis:", err);
+  }
+
+  // getLetterThisMonth(8);
+  // await sendLetter();
+})();
+
+module.exports = client;

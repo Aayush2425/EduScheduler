@@ -26,7 +26,7 @@ const ResourceSchema = mongoose.Schema({
   },
 });
 
-const DepartmentSchema = mongoose.Schema({
+  const DepartmentSchema = mongoose.Schema({
   deptName: {
     type: String,
     required: true,

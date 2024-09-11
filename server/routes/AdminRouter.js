@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const {
-  updateAdmin,
   getAdmin,
   signupAdmin,
-  signinAdmin
+  signinAdmin,
+  updateAdmin,
 } = require("../controller/AdminController");
 
 // Update Admin
