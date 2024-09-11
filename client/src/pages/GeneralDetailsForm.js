@@ -101,14 +101,16 @@ function GeneralDetailsForm() {
 
       if (universityData.generalDetails == null) {
         universityData.generalDetails = data.data._id;
+        // universityData.resources = data.data.numberOfResources
   
         const updateResponse = await fetch(`http://localhost:8000/university/${uniName}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
+          body: JSON.stringify({ ...data,
             generalDetails: universityData.generalDetails,
+            // resources : universityData.resources
           }),
         });
   

@@ -5,16 +5,16 @@ export const FacultyDetailsForm = () => {
   const uniName = localStorage.getItem("uniName");
   const navigate = useNavigate();
   const [facultyDetails, setFacultyDetails] = useState({
-    factName : "",
-    dept : [],
-    subjects : [],
-    availability : [
+    factName: "",
+    dept: [],
+    subjects: [],
+    availability: [
       {
-        day : "",
-        slots : []
+        day: "",
+        slots: []
       }
     ],
-    teachingType : []
+    teachingType: []
   })
 
   const [deptData, setDeptData] = useState([]);
@@ -25,31 +25,31 @@ export const FacultyDetailsForm = () => {
       const response = await fetch("http://localhost:8000/generalDetails/" + uniName + "/get-details", {
         method: 'GET'
       });
-      
+
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
-      
+
       const data = await response.json();
       console.log(data[0]);
-      
-  
+
+
       if (data) {
         const deptNames = data[0].generalDetails.depts.map((element) => element.deptName);
 
-        setDeptData(deptNames); 
+        setDeptData(deptNames);
 
         const allSubjectData = data[0].generalDetails.depts.flatMap((element) => element.subjects);
-        
+
         const subjectNames = allSubjectData.map((element) => element.subjectName);
 
         setSubjectData(subjectNames);
-        
-  
+
+
       } else {
         console.log("University not found");
       }
-  
+
     } catch (err) {
       console.error("Error fetching university data:", err);
     }
@@ -58,7 +58,7 @@ export const FacultyDetailsForm = () => {
   useEffect(() => {
     getUniversityDept();
   }, []);
-  
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFacultyDetails({
@@ -73,9 +73,9 @@ export const FacultyDetailsForm = () => {
     let updatedDepts;
 
     if (checked) {
-      updatedDepts = [...facultyDetails.dept, value]; 
+      updatedDepts = [...facultyDetails.dept, value];
     } else {
-      updatedDepts = facultyDetails.dept.filter((dept) => dept !== value); 
+      updatedDepts = facultyDetails.dept.filter((dept) => dept !== value);
     }
 
     setFacultyDetails({
@@ -89,9 +89,9 @@ export const FacultyDetailsForm = () => {
     let updatedSubjects;
 
     if (checked) {
-      updatedSubjects = [...facultyDetails.subjects, value]; 
+      updatedSubjects = [...facultyDetails.subjects, value];
     } else {
-      updatedSubjects = facultyDetails.subjects.filter((subject) => subject !== value); 
+      updatedSubjects = facultyDetails.subjects.filter((subject) => subject !== value);
     }
 
     setFacultyDetails({
@@ -119,8 +119,8 @@ export const FacultyDetailsForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     if (!facultyDetails.factName) {
       alert("Faculty name is required!");
@@ -128,8 +128,9 @@ export const FacultyDetailsForm = () => {
     }
 
     console.log(facultyDetails);
+    let data;
 
-    fetch("http://localhost:8000/faculty/createfaculty", {
+    await fetch("http://localhost:8000/faculty/createfaculty", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -137,8 +138,8 @@ export const FacultyDetailsForm = () => {
       body: JSON.stringify(facultyDetails)
     })
       .then((response) => response.json())
-      .then((data) => {
-        console.log("Successfully submitted:", data);
+      .then((dataa) => {
+        console.log("Successfully submitted:", dataa);
         setFacultyDetails({
           factName: "",
           dept: [],
@@ -146,98 +147,131 @@ export const FacultyDetailsForm = () => {
           availability: [{ day: "", slots: [] }],
           teachingType: []
         });
-        navigate("/resourceDetailForm");
+        data = dataa;
       })
       .catch((error) => {
         console.error("Error submitting form:", error);
       });
+
+    console.log("dataaa",data);
+    
+    const universityResponse = await fetch("http://localhost:8000/university/" + uniName, { method: "GET" })
+
+    const universityData = await universityResponse.json();
+
+    if (true) {
+      if (!universityData.facultyDetails.includes(data.data._id)) { universityData.facultyDetails.push(data.data._id); }
+      // universityData.resources = data.data.numberOfResources
+
+      const updateResponse = await fetch(`http://localhost:8000/university/${uniName}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...data,
+          facultyDetails: universityData.facultyDetails,
+          // resources : universityData.resources
+        }),
+      });
+
+      if (!updateResponse.ok) {
+        throw new Error("Failed to update university details");
+      }
+
+      const updatedUniversity = await updateResponse.json();
+      console.log("University updated successfully:", updatedUniversity);
+    } else {
+      console.log("Facdetails ID already exists in the university");
+    }
+    navigate("/resourceDetailForm");
   };
 
   return (
     <div className="w-screen flex justify-center py-5">
-    <form className="w-4/5 flex flex-col justify-center py-5 shadow-xl" onSubmit={handleSubmit}>
-    <div className="flex w-full flex-col gap-8 text-start p-7">
-    <div className="font-bold text-4xl mx-auto text-slate-700">
-          Faculty Details Form
-        </div>
-      <div className="flex flex-col gap-2 justify-start">
-        <input
-          type="text"
-          name="factName"
-          placeholder='Enter Faculty Name'
-          value={facultyDetails.factName}
-          onChange={handleInputChange}
-          className="border rounded-lg py-2 px-3 w-full"
-        />
-      </div>
-      <div className="flex flex-col gap-2 justify-start">
-      <div className="font-bold text-2xl text-slate-700">Choose Department : </div>
-        {deptData.map((dept, index) => (
-          <div key={index}>
-            <input
-              type="checkbox"
-              id={`dept-${index}`}
-              value={dept}
-              checked={facultyDetails.dept.includes(dept)}
-              onChange={handleDeptCheckboxChange}
-            />
-            <label htmlFor={`dept-${index}`} className="ml-2">{dept}</label>
+      <form className="w-4/5 flex flex-col justify-center py-5 shadow-xl" onSubmit={handleSubmit}>
+        <div className="flex w-full flex-col gap-8 text-start p-7">
+          <div className="font-bold text-4xl mx-auto text-slate-700">
+            Faculty Details Form
           </div>
-        ))}
-      </div>
-
-      <div className="flex flex-col gap-2 justify-start">
-      <div className="font-bold text-2xl text-slate-700">Choose Subjects : </div>
-      {subjectData.map((subject, index) => (
-          <div key={index}>
+          <div className="flex flex-col gap-2 justify-start">
             <input
-              type="checkbox"
-              id={`subject-${index}`}
-              value={subject}
-              checked={facultyDetails.subjects.includes(subject)}
-              onChange={handleSubjectCheckboxChange}
+              type="text"
+              name="factName"
+              placeholder='Enter Faculty Name'
+              value={facultyDetails.factName}
+              onChange={handleInputChange}
+              className="border rounded-lg py-2 px-3 w-full"
             />
-            <label htmlFor={`subject-${index}`} className="ml-2">{subject}</label>
           </div>
-        ))}
-      </div>
+          <div className="flex flex-col gap-2 justify-start">
+            <div className="font-bold text-2xl text-slate-700">Choose Department : </div>
+            {deptData.map((dept, index) => (
+              <div key={index}>
+                <input
+                  type="checkbox"
+                  id={`dept-${index}`}
+                  value={dept}
+                  checked={facultyDetails.dept.includes(dept)}
+                  onChange={handleDeptCheckboxChange}
+                />
+                <label htmlFor={`dept-${index}`} className="ml-2">{dept}</label>
+              </div>
+            ))}
+          </div>
 
-      <div className="flex flex-col gap-2 justify-start">
-      <div className="flex justify-between items-center w-full">
+          <div className="flex flex-col gap-2 justify-start">
+            <div className="font-bold text-2xl text-slate-700">Choose Subjects : </div>
+            {subjectData.map((subject, index) => (
+              <div key={index}>
+                <input
+                  type="checkbox"
+                  id={`subject-${index}`}
+                  value={subject}
+                  checked={facultyDetails.subjects.includes(subject)}
+                  onChange={handleSubjectCheckboxChange}
+                />
+                <label htmlFor={`subject-${index}`} className="ml-2">{subject}</label>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col gap-2 justify-start">
+            <div className="flex justify-between items-center w-full">
               <div className="font-bold text-2xl text-slate-700">Availability : </div>
               <button type="button" onClick={addAvailabilitySlot} className="bg-slate-900 px-10 rounded-md py-2 font-bold text-white">
                 + Add Availability
               </button>
             </div>
-        {facultyDetails.availability.map((avail, index) => (
-          <div key={index} className="mb-2">
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder="Day"
-                value={avail.day}
-                onChange={(e) => handleAvailabilityChange(index, "day", e.target.value)}
-                className="border rounded-lg py-2 px-3 w-full"
-              />
-              <input
-                type="text"
-                placeholder="Slots (comma separated)"
-                value={avail.slots.join(",")}
-                onChange={(e) =>
-                  handleAvailabilityChange(index, "slots", e.target.value.split(","))
-                }
-                className="border rounded-lg py-2 px-3 w-full"
-              />
-            </div>
+            {facultyDetails.availability.map((avail, index) => (
+              <div key={index} className="mb-2">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Day"
+                    value={avail.day}
+                    onChange={(e) => handleAvailabilityChange(index, "day", e.target.value)}
+                    className="border rounded-lg py-2 px-3 w-full"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Slots (comma separated)"
+                    value={avail.slots.join(",")}
+                    onChange={(e) =>
+                      handleAvailabilityChange(index, "slots", e.target.value.split(","))
+                    }
+                    className="border rounded-lg py-2 px-3 w-full"
+                  />
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
 
-      <div className="flex justify-center">
-        <button className="font-bold bg-slate-900 text-white py-2 px-10 rounded-lg mt-5">Submit</button>
-      </div>
-      </div>
-    </form>
+          <div className="flex justify-center">
+            <button className="font-bold bg-slate-900 text-white py-2 px-10 rounded-lg mt-5">Submit</button>
+          </div>
+        </div>
+      </form>
     </div>
   )
 }

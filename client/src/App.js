@@ -7,6 +7,7 @@ import { FacultyDetailsForm } from './pages/FacultyDetailsForm';
 import { ResourceDetailsForm } from './pages/ResourceDetailsForm';
 import { Hero } from './pages/Hero';
 import { Dashboard } from './pages/Dashboard';
+import { CreateTableForm } from './pages/CreateTableForm';
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
           <Route path='/generalDetailForm' element={<GeneralDetailsForm />}></Route>
           <Route path='/facultyDetailForm' element={<FacultyDetailsForm />}></Route>
           <Route path='/resourceDetailForm' element={<ResourceDetailsForm />}></Route>
+          <Route path='/createTimetableForm' element={<CreateTableForm />}></Route>
+          
         </Routes>
       </BrowserRouter>
     </div>
