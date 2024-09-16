@@ -43,6 +43,7 @@ const client = createClient({
   socket: {
     host: "redis-17169.c305.ap-south-1-1.ec2.redns.redis-cloud.com",
     port: 17169,
+    ConnectionTimeoutError: 1000,
   },
 });
 
@@ -52,50 +53,45 @@ app.use("/faculty", facultyRoutes);
 app.use("/resources", resourceRoutes);
 app.use("/timetable", timetableRoutes);
 app.use("/university", universityRoutes);
-client.on("error", (err) => {
-  console.log("Redis Client Error", err);
-  if (err.errno == -3008) {
-    console.log("check internet connection");
+// client.on("error", (err) => {
+//   console.log("Redis Client Error", err);
+//   if (err.errno == -3008) {
+//     console.log("check internet connection");
 
-    let timeout = 10,
-      count = 1;
-    const interval = setInterval(() => {
-      if (count == 10) {
-        console.log(`retrying in ${timeout} secs`);
-        if (timeout == 0) {
-          clearInterval(interval);
-        }
-        timeout--;
-        count = 1;
-      }
-      count++;
-    }, 100);
-  }
-});
+//     let timeout = 10,
+//       count = 1;
+//     const interval = setInterval(() => {
+//       if (count == 10) {
+//         console.log(`retrying in ${timeout} secs`);
+//         if (timeout == 0) {
+//           clearInterval(interval);
+//         }
+//         timeout--;
+//         count = 1;
+//       }
+//       count++;
+//     }, 100);
+//   }
+// });
 
-(async () => {
-  try {
-    await client.connect();
-    console.log("Redis client connected successfully.");
+// (async () => {
+//   try {
+//     await client.connect();
+//     console.log("Redis client connected successfully.");
 
-    // Check if the client is ready before running any commands
-    const pingResult = await client.ping();
-    console.log("Redis Client Ping:", pingResult);
+//     // Check if the client is ready before running any commands
+//     const pingResult = await client.ping();
+//     console.log("Redis Client Ping:", pingResult);
 
-    app.use("/admin", adminRouter);
-    app.use("/generalDetails", generalDetailsRoutes);
-    app.use("/faculty", facultyRoutes);
-    app.use("/resources", resourceRoutes);
-    app.use("/timetable", timetableRoutes);
-    app.use("/university", universityRoutes);
-    app.use("/admin", adminRouter);
-    
-  } catch (err) {
-    console.error("Failed to connect to Redis:", err);
-  }
-
-  // getLetterThisMonth(8);
-  // await sendLetter();
-})();
+// app.use("/generalDetails", generalDetailsRoutes);
+// app.use("/faculty", facultyRoutes);
+// app.use("/resources", resourceRoutes);
+// app.use("/timetable", timetableRoutes);
+// app.use("/university", universityRoutes);
+// app.use("/admin", adminRouter);
+//   } catch (err) {
+//     console.error("Failed to connect to Redis:", err);
+//   }
+// })();
 
 module.exports = client;

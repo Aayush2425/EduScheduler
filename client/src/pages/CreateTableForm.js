@@ -1,206 +1,221 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 
 export const CreateTableForm = () => {
+  const [formData, setFormData] = useState({
+    dept: "",
+    sem: "",
+    numOfStudentPerBatch: 0,
+    faculties: [
+      {
+        faculty: "",
+        subject: "",
+      },
+    ],
+    uniName: "darshan university",
+  });
 
-    const [formData, setFormData] = useState({
-        dept: "",
-        sem: "",
-        batch: "",
-        resources: {},
-        numOfStudentPerBatch: 0,
-        faculties: [{
-            faculty: "",
-            subject: ""
-        }],
-        uniName: "darshan university"
-    })
+  const [deptData, setDeptData] = useState([]);
+  const [facNnS, setFacNnS] = useState([]);
+  const uniNamee = localStorage.getItem("uniName");
 
-    const [deptData, setDeptData] = useState([]);
-    const [facNnS, setFacNnS] = useState([]);
-    const uniNamee = localStorage.getItem("uniName")
+  // const getFacAndSub = async () => {
+  //     try {
+  //         const response = await fetch("http://localhost:8000/faculty/" + uniNamee + "/get-all-faculty", {
+  //             method: 'GET'
+  //         })
+  //             .then(response => response.json())
+  //         // .then(response => console.log(response))
 
-    // const getFacAndSub = async () => {
-    //     try {
-    //         const response = await fetch("http://localhost:8000/faculty/" + uniNamee + "/get-all-faculty", {
-    //             method: 'GET'
-    //         })
-    //             .then(response => response.json())
-    //         // .then(response => console.log(response))
+  //         const facultyDetails = response.map(faculty => faculty.facultyDetails)
+  //         console.log("facdet : ", facultyDetails)
+  //         for (const facuilty of facultyDetails) {
+  //             facuilty.map(faculty => setFacNnS(facNnS.push({ factName: faculty.factName, subjects: faculty.subjects })))
+  //         }
+  //         // const facultyData = facultyDetails.foreach(facuilty => facuilty.map(faculty => setFacNnS(facNnS.push({factName: faculty.factName, subjects: faculty.subjects}))))
+  //         console.log(facNnS);
+  //         // console.log(response)
+  //     } catch (error) {
+  //         console.error("Error fetching faculty and subject data:", error);
+  //     }
+  // }
 
-    //         const facultyDetails = response.map(faculty => faculty.facultyDetails)
-    //         console.log("facdet : ", facultyDetails)
-    //         for (const facuilty of facultyDetails) {
-    //             facuilty.map(faculty => setFacNnS(facNnS.push({ factName: faculty.factName, subjects: faculty.subjects })))
-    //         }
-    //         // const facultyData = facultyDetails.foreach(facuilty => facuilty.map(faculty => setFacNnS(facNnS.push({factName: faculty.factName, subjects: faculty.subjects}))))
-    //         console.log(facNnS);
-    //         // console.log(response)
-    //     } catch (error) {
-    //         console.error("Error fetching faculty and subject data:", error);
-    //     }
-    // }
-
-    const getUniDept = async () => {
-        try {
-            const response = await fetch("http://localhost:8000/generalDetails/" + uniNamee + "/get-details", {
-                method: 'GET'
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to fetch data");
-            }
-
-            const data = await response.json();
-            // console.log(data[0]);
-
-
-            if (data) {
-                const deptNames = data[0].generalDetails.depts.map((element) => element.deptName);
-
-                setDeptData(deptNames);
-            } else {
-                console.log("University not found");
-            }
-        } catch (err) {
-            console.error("Error fetching university data:", err);
+  const getUniDept = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8000/generalDetails/" + uniNamee + "/get-details",
+        {
+          method: "GET",
         }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+
+      const data = await response.json();
+      // console.log(data[0]);
+
+      if (data) {
+        const deptNames = data[0].generalDetails.depts.map(
+          (element) => element.deptName
+        );
+
+        setDeptData(deptNames);
+      } else {
+        console.log("University not found");
+      }
+    } catch (err) {
+      console.error("Error fetching university data:", err);
     }
-    const getFacAndSub = async () => {
-        try {
-            const response = await fetch("http://localhost:8000/faculty/" + uniNamee + "/get-all-faculty", {
-                method: 'GET'
-            });
-
-            const data = await response.json();
-            // Assuming response is an array of faculties with `facultyDetails`
-            const facultyDetails = data.map(faculty => faculty.facultyDetails);
-
-            // Instead of pushing, create a new array
-            const formattedFaculties = facultyDetails.flatMap(facultyList =>
-                facultyList.map(fac => ({
-                    factName: fac.factName,
-                    subjects: fac.subjects
-                }))
-            );
-
-            setFacNnS(formattedFaculties); // Update state with new array
-        } catch (error) {
-            console.error("Error fetching faculty and subject data:", error);
+  };
+  const getFacAndSub = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8000/faculty/" + uniNamee + "/get-all-faculty",
+        {
+          method: "GET",
         }
-    };
+      );
 
-    const [selectedFaculties, setSelectedFaculties] = useState([]);
-    const [selectedSubject, setSelectedSubject] = useState("");
+      const data = await response.json();
+      // Assuming response is an array of faculties with `facultyDetails`
+      const facultyDetails = data.map((faculty) => faculty.facultyDetails);
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
+      // Instead of pushing, create a new array
+      const formattedFaculties = facultyDetails.flatMap((facultyList) =>
+        facultyList.map((fac) => ({
+          factName: fac.factName,
+          subjects: fac.subjects,
+        }))
+      );
 
-    const handleFacultySelection = (index) => {
-        const updatedSelectedFaculties = [...selectedFaculties];
-        const faculty = facNnS[index];
+      setFacNnS(formattedFaculties); // Update state with new array
+    } catch (error) {
+      console.error("Error fetching faculty and subject data:", error);
+    }
+  };
 
-        if (updatedSelectedFaculties.includes(faculty)) {
-            setSelectedFaculties(updatedSelectedFaculties.filter(f => f !== faculty));
-        } else {
-            updatedSelectedFaculties.push(faculty);
-            setSelectedFaculties(updatedSelectedFaculties);
-        }
+  const [selectedFaculties, setSelectedFaculties] = useState([]);
+  const [selectedSubject, setSelectedSubject] = useState("");
 
-        setFormData((prevState) => ({
-            ...prevState,
-            faculties: updatedSelectedFaculties.map(fac => ({
-                faculty: fac.factName,
-                subject: fac.subjects
-            }))
-        }));
-    };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    const handleSubjectChange = (e) => {
-        setSelectedSubject(e.target.value);
+  const handleFacultySelection = (index) => {
+    const updatedSelectedFaculties = [...selectedFaculties];
+    const faculty = facNnS[index];
 
-        setFormData((prevState) => ({
-            ...prevState,
-            faculties: prevState.faculties.map(fac => ({
-                ...fac,
-                subjects: e.target.value
-            }))
-        }));
-    };
+    if (updatedSelectedFaculties.includes(faculty)) {
+      setSelectedFaculties(
+        updatedSelectedFaculties.filter((f) => f !== faculty)
+      );
+    } else {
+      updatedSelectedFaculties.push(faculty);
+      setSelectedFaculties(updatedSelectedFaculties);
+    }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setFormData({ ...formData, uniName: uniNamee });
-        console.log(formData);
-        await fetch("http://localhost:8000/timetable/createtimetable", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(formData)
-        });
-        console.log(formData);
-    };
-    useEffect(() => {
-        getUniDept()
-        getFacAndSub()
-    }, [])
+    setFormData((prevState) => ({
+      ...prevState,
+      faculties: updatedSelectedFaculties.map((fac) => ({
+        faculty: fac.factName,
+        subject: fac.subjects,
+      })),
+    }));
+  };
 
-    return (
-        <div className="w-screen flex justify-center py-5">
-            <form className="w-4/5 flex flex-col justify-center py-5 shadow-xl" onSubmit={handleSubmit}>
-                <div className="flex w-full flex-col gap-8 text-start p-7">
-                    <div className="font-bold text-4xl mx-auto text-slate-700">
-                        Create Timetable Form
-                    </div>
+  const handleSubjectChange = (e) => {
+    setSelectedSubject(e.target.value);
 
-                    {/* Department Selection */}
-                    <div className="flex flex-col gap-2 justify-start">
-                        <div className="font-bold text-2xl text-slate-700">Select Department: </div>
-                        <select
-                            name="dept"
-                            value={formData.dept}
-                            onChange={handleInputChange}
-                            className="border rounded-lg py-2 px-3 w-full"
-                        >
-                            <option value="">Select Department</option>
-                            {deptData.map((dept, index) => (
-                                <option key={index} value={dept}>
-                                    {dept}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+    setFormData((prevState) => ({
+      ...prevState,
+      faculties: prevState.faculties.map((fac) => ({
+        ...fac,
+        subjects: e.target.value,
+      })),
+    }));
+  };
 
-                    {/* Semester Input */}
-                    <div className="flex flex-col gap-2 justify-start">
-                        <input
-                            type="text"
-                            name="sem"
-                            placeholder="Enter Semester"
-                            value={formData.sem}
-                            onChange={handleInputChange}
-                            className="border rounded-lg py-2 px-3 w-full"
-                        />
-                    </div>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setFormData({ ...formData, uniName: uniNamee });
+    console.log(formData);
+    await fetch("http://localhost:8000/timetable/createtimetable", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+    console.log(formData);
+  };
+  useEffect(() => {
+    getUniDept();
+    getFacAndSub();
+  }, []);
 
-                    {/* Batch Input */}
-                    <div className="flex flex-col gap-2 justify-start">
-                        <input
-                            type="text"
-                            name="batch"
-                            placeholder="Enter Batch"
-                            value={formData.batch}
-                            onChange={handleInputChange}
-                            className="border rounded-lg py-2 px-3 w-full"
-                        />
-                    </div>
+  return (
+    <div className="w-screen flex justify-center py-5">
+      <form
+        className="w-4/5 flex flex-col justify-center py-5 shadow-xl"
+        onSubmit={handleSubmit}
+      >
+        <div className="flex w-full flex-col gap-8 text-start p-7">
+          <div className="font-bold text-4xl mx-auto text-slate-700">
+            Create Timetable Form
+          </div>
 
-                    {/* Faculty Checkboxes */}
-                    <div className="flex flex-col gap-2 justify-start">
-                        <div className="font-bold text-2xl text-slate-700">Select Faculty: </div>
-                        {/* {facNnS.map((faculty, index) => {
+          {/* Department Selection */}
+          <div className="flex flex-col gap-2 justify-start">
+            <div className="font-bold text-2xl text-slate-700">
+              Select Department:{" "}
+            </div>
+            <select
+              name="dept"
+              value={formData.dept}
+              onChange={handleInputChange}
+              className="border rounded-lg py-2 px-3 w-full"
+            >
+              <option value="">Select Department</option>
+              {deptData.map((dept, index) => (
+                <option key={index} value={dept}>
+                  {dept}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Semester Input */}
+          <div className="flex flex-col gap-2 justify-start">
+            <input
+              type="text"
+              name="sem"
+              placeholder="Enter Semester"
+              value={formData.sem}
+              onChange={handleInputChange}
+              className="border rounded-lg py-2 px-3 w-full"
+            />
+          </div>
+
+          {/* Batch Input */}
+          <div className="flex flex-col gap-2 justify-start">
+            <input
+              type="text"
+              name="batch"
+              placeholder="Enter Batch"
+              value={formData.batch}
+              onChange={handleInputChange}
+              className="border rounded-lg py-2 px-3 w-full"
+            />
+          </div>
+
+          {/* Faculty Checkboxes */}
+          <div className="flex flex-col gap-2 justify-start">
+            <div className="font-bold text-2xl text-slate-700">
+              Select Faculty:{" "}
+            </div>
+            {/* {facNnS.map((faculty, index) => {
                         return(
                         <div key={index} className="flex items-center gap-2">
                             <input
@@ -212,63 +227,67 @@ export const CreateTableForm = () => {
                             <label className="text-lg text-slate-700">{faculty.factName}</label>
                         </div>
                     )})} */}
-                        {facNnS && facNnS.length > 0 ? (
-                            facNnS.map((faculty, index) => {
-                                return (
-                                    <div key={index} className="flex items-center gap-2">
-                                        <input
-                                            type="checkbox"
-                                            value={faculty.factName}
-                                            onChange={() => handleFacultySelection(index)}
-                                            className="w-5 h-5"
-                                        />
-                                        <label className="text-lg text-slate-700">{faculty.factName}</label>
-                                    </div>
-                                );
-                            })
-                        ) : (
-                            <div>No faculties available</div>
-                        )}
-                    </div>
+            {facNnS && facNnS.length > 0 ? (
+              facNnS.map((faculty, index) => {
+                return (
+                  <div key={index} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      value={faculty.factName}
+                      onChange={() => handleFacultySelection(index)}
+                      className="w-5 h-5"
+                    />
+                    <label className="text-lg text-slate-700">
+                      {faculty.factName}
+                    </label>
+                  </div>
+                );
+              })
+            ) : (
+              <div>No faculties available</div>
+            )}
+          </div>
 
-                    {/* Subject Dropdown based on selected faculties */}
-                    {selectedFaculties.length > 0 &&
-                        selectedFaculties.map((faculty, index) => (
-                            <div key={index} className="flex flex-col gap-2 justify-start">
-                                <div className="font-bold text-xl text-slate-700">
-                                    Select Subject for {faculty.factName}:
-                                </div>
-                                <select
-                                    name="subject"
-                                    value={formData.faculties[index]?.subject || ""}
-                                    onChange={(e) => handleSubjectChange(index, e.target.value)}
-                                    className="border rounded-lg py-2 px-3 w-full"
-                                >
-                                    <option value="">Select Subject</option>
-                                    {faculty.subjects.map((subject, subIndex) => (
-                                        <option key={subIndex} value={subject}>
-                                            {subject}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        ))}
+          {/* Subject Dropdown based on selected faculties */}
+          {selectedFaculties.length > 0 &&
+            selectedFaculties.map((faculty, index) => (
+              <div key={index} className="flex flex-col gap-2 justify-start">
+                <div className="font-bold text-xl text-slate-700">
+                  Select Subject for {faculty.factName}:
+                </div>
+                <select
+                  name="subject"
+                  value={formData.faculties[index]?.subject || ""}
+                  onChange={(e) => handleSubjectChange(index, e.target.value)}
+                  className="border rounded-lg py-2 px-3 w-full"
+                >
+                  <option value="">Select Subject</option>
+                  {faculty.subjects.map((subject, subIndex) => (
+                    <option key={subIndex} value={subject}>
+                      {subject}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ))}
 
-                    {/* Number of Students per Batch */}
-                    <div className="flex flex-col gap-2 justify-start">
-                    <label className="font-bold text-2xl text-slate-700">Number of Students per Batch: </label>
-                        <input
-                            type="number"
-                            name="numOfStudentPerBatch"
-                            placeholder="Enter Number of Students per Batch"
-                            value={formData.numOfStudentPerBatch}
-                            onChange={handleInputChange}
-                            className="border rounded-lg py-2 px-3 w-full"
-                        />
-                    </div>
+          {/* Number of Students per Batch */}
+          <div className="flex flex-col gap-2 justify-start">
+            <label className="font-bold text-2xl text-slate-700">
+              Number of Students per Batch:{" "}
+            </label>
+            <input
+              type="number"
+              name="numOfStudentPerBatch"
+              placeholder="Enter Number of Students per Batch"
+              value={formData.numOfStudentPerBatch}
+              onChange={handleInputChange}
+              className="border rounded-lg py-2 px-3 w-full"
+            />
+          </div>
 
-                    {/* University Name (from localStorage) */}
-                    {/* <div className="flex flex-col gap-2 justify-start">
+          {/* University Name (from localStorage) */}
+          {/* <div className="flex flex-col gap-2 justify-start">
                         <input
                             type="text"
                             name="uniName"
@@ -278,15 +297,14 @@ export const CreateTableForm = () => {
                         />
                     </div> */}
 
-                    {/* Submit Button */}
-                    <div className="flex justify-center">
-                        <button className="font-bold bg-slate-900 text-white py-2 px-10 rounded-lg mt-5">
-                            Submit
-                        </button>
-                    </div>
-                </div>
-            </form>
-
+          {/* Submit Button */}
+          <div className="flex justify-center">
+            <button className="font-bold bg-slate-900 text-white py-2 px-10 rounded-lg mt-5">
+              Submit
+            </button>
+          </div>
         </div>
-    )
-}
+      </form>
+    </div>
+  );
+};

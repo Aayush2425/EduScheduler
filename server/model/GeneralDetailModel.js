@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const TimeSlotSchema = mongoose.Schema({
-  name:{
+  name: {
     type: String,
     required: true,
   },
@@ -26,7 +26,7 @@ const ResourceSchema = mongoose.Schema({
   },
 });
 
-  const DepartmentSchema = mongoose.Schema({
+const DepartmentSchema = mongoose.Schema({
   deptName: {
     type: String,
     required: true,
@@ -36,17 +36,18 @@ const ResourceSchema = mongoose.Schema({
     required: true,
   },
   batches: [String],
-  subjects: [{
-    subjectName: String,
-    faculty: String,
-    credit: [
-      {
-        resourceName: String,
-        quantity: Number 
-      }
-    ],
-
-  }],
+  subjects: [
+    {
+      subjectName: String,
+      faculty: String,
+      credit: [
+        {
+          resourceName: String,
+          quantity: Number,
+        },
+      ],
+    },
+  ],
 });
 
 const GeneralDetailsSchema = mongoose.Schema({
@@ -55,14 +56,14 @@ const GeneralDetailsSchema = mongoose.Schema({
     slots: [TimeSlotSchema],
     resources: [
       {
-        name : {
-          type : String,
+        name: {
+          type: String,
         },
-        duration : {
-          type : String,
+        duration: {
+          type: String,
         },
-      }
-    ],        // lab - 2h  audi - 1 h   
+      },
+    ], // lab - 2h  audi - 1 h
   },
   days: {
     type: Number,
