@@ -1,27 +1,15 @@
 const mongoose = require("mongoose");
 
-const SlotSchema = mongoose.Schema({
-  slotNumber: {
-    type: Number,
-    required: true,
-  },
-  resource: {
-    type: String,
-    required: true,
-  },
-  faculty: {
-    type: String,
-    required: true,
-  },
-  batch: [String],
-});
+// const SlotSchema = mongoose.Schema({
+//   type:Array,
+// });
 
 const DaySchema = mongoose.Schema({
-  dayName: {
+  day: {
     type: String,
     required: true,
   },
-  slot: [SlotSchema],
+  studySlot:[Array],
 });
 
 const TimetableSchema = mongoose.Schema({

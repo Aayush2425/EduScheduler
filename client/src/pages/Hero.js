@@ -13,7 +13,7 @@ export const Hero = () => {
             <div className='flex flex-col justify-center items-center gap-4'>
                 <div className='text-6xl font-serif font-bold'>EduSchedular</div>
                 {
-                    uniName ? <Link to="/dashboard"><div className='bg-black w-fit py-2 px-5 rounded-lg'>Explore More </div></Link>
+                    uniName ? <Link to="/home"><div className='bg-black w-fit py-2 px-5 rounded-lg'>Explore More </div></Link>
                     : <Link to="/login"><div className='bg-black w-fit py-2 px-5 rounded-lg'>Explore More </div></Link>
                 }
             </div>

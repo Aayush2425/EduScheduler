@@ -1,3 +1,4 @@
+const GenerateTimeTable = require("../logic/TimeTableGenerater.js");
 const Timetable = require("../model/TimetableModel.js");
 const University = require("../model/UniversityModel.js");
 
@@ -6,13 +7,19 @@ const University = require("../model/UniversityModel.js");
 const createTimetable = async (req, res) => {
   try {
     // Destructure the required fields from the request body
-    const { deptName, sem, day } = req.body;
+    const {dept,sem,batch,resources,numOfStudentPerBatch,faculties,uniName} = req.body;
+
 
     // Create a new timetable instance using the Timetable model
+
+    console.log(dept,sem,batch,resources,numOfStudentPerBatch,faculties,uniName);
+    
+    ans=await GenerateTimeTable(dept,sem,batch,resources,numOfStudentPerBatch,faculties,uniName);
+    console.log(ans);
     const newTimetable = new Timetable({
-      deptName,
-      sem,
-      day,
+      deptName:ans.department,
+      sem:ans.sem,
+      day:ans.timetable,
     });
 
     // Save the new timetable to the database

@@ -130,8 +130,8 @@ export const ResourceDetailsForm = () => {
       //   throw new Error('Network response was not ok');
       // }
 
-      const result = await response.json();
-      console.log('Form submitted successfully:', result);
+      // const result = await response.json();
+      // console.log('Form submitted successfully:', result);
 
       setResourceDetail({
         type: "",

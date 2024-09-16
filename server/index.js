@@ -89,13 +89,7 @@ client.on("error", (err) => {
     app.use("/timetable", timetableRoutes);
     app.use("/university", universityRoutes);
     app.use("/admin", adminRouter);
-    app.post("/createTimeTableForm", async (req, res) => {
-      const data=req.body;
-      ans = await GenerateTimeTable(data);
-      // console.log(ans);
-      await client.set("timetable", JSON.stringify(ans));
-      res.send(ans)
-    });
+    
   } catch (err) {
     console.error("Failed to connect to Redis:", err);
   }
